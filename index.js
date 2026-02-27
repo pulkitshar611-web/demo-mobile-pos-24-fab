@@ -20,14 +20,28 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 //app.use(cors({ origin: "*", credentials: true }));
 // Proper CORS Setup
+
+
+
+const allowedOrigins = [
+  "https://posmobile.kiaantechnology.com",
+  "http://localhost:3000"
+];
+
 app.use(
-    cors({
-      origin: "*", //Change this to your frontend URL
-      credentials: true,
-      methods: "GET,POST,PUT, PATCH,DELETE",
-      allowedHeaders: "Content-Type,Authorization",
-    })
-  );
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+
 
 app.get("/", (req, res) => {
     res.send("Welcome to the Pos Backend API! Everything is working properly.");
